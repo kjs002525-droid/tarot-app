@@ -107,9 +107,9 @@
 
     .title-main {
       font-family: var(--font-title);
-      font-size: clamp(28px, 5vw, 52px);
+      font-size: clamp(32px, 6vw, 58px);
       font-weight: 400;
-      color: var(--cream);
+      color: #ffffff;
       letter-spacing: 3px;
       margin-bottom: 12px;
       line-height: 1.2;
@@ -117,8 +117,8 @@
 
     .title-sub {
       font-family: var(--font-body);
-      font-size: clamp(14px, 2vw, 17px);
-      color: var(--muted);
+      font-size: clamp(17px, 2.5vw, 22px);
+      color: #c8b89a;
       font-style: italic;
       letter-spacing: 1px;
     }
@@ -175,7 +175,7 @@
 
     .slot-position {
       font-family: var(--font-title);
-      font-size: 10px;
+      font-size: clamp(12px, 1.8vw, 15px);
       letter-spacing: 3px;
       color: var(--gold);
       text-transform: uppercase;
@@ -279,8 +279,8 @@
 
     .slot-name {
       font-family: var(--font-body);
-      font-size: clamp(11px, 1.5vw, 14px);
-      color: var(--muted);
+      font-size: clamp(14px, 2vw, 17px);
+      color: #d4c5b0;
       text-align: center;
       line-height: 1.4;
       font-style: italic;
@@ -317,16 +317,16 @@
 
     .deck-header-label {
       font-family: var(--font-body);
-      font-size: 14px;
-      color: var(--muted);
+      font-size: clamp(15px, 2vw, 18px);
+      color: #c8b89a;
       font-style: italic;
     }
 
     .deck-count {
       font-family: var(--font-title);
-      font-size: 11px;
+      font-size: clamp(13px, 1.8vw, 16px);
       letter-spacing: 2px;
-      color: var(--gold-dim);
+      color: var(--gold);
     }
 
     /* 카드 그리드 */
@@ -408,13 +408,13 @@
 
     .reset-btn {
       font-family: var(--font-title);
-      font-size: 13px;
+      font-size: clamp(14px, 2vw, 17px);
       letter-spacing: 3px;
-      color: var(--gold);
+      color: #ffffff;
       background: transparent;
-      border: 1px solid var(--gold-dim);
+      border: 1.5px solid var(--gold);
       border-radius: 40px;
-      padding: 14px 40px;
+      padding: 16px 48px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
@@ -565,8 +565,8 @@
 
     .status-text {
       font-family: var(--font-body);
-      font-size: clamp(13px, 2vw, 16px);
-      color: var(--muted);
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #ffffff;
       font-style: italic;
       letter-spacing: 0.5px;
     }
@@ -602,6 +602,138 @@
     ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 
     /* ══════════════════════════════════════════
+       셔플 화면 (78장 전체)
+    ══════════════════════════════════════════ */
+    .shuffle-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      transition: opacity 0.9s ease;
+    }
+    .shuffle-overlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .shuffle-title {
+      font-family: var(--font-title);
+      font-size: clamp(16px, 2.8vw, 22px);
+      letter-spacing: 7px;
+      color: var(--gold);
+      animation: goldPulse 2s ease-in-out infinite;
+      z-index: 2;
+    }
+    /* 78장 카드 무대 */
+    .shuffle-stage {
+      position: relative;
+      width: min(90vw, 500px);
+      height: clamp(200px, 35vw, 280px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .shuffle-card {
+      position: absolute;
+      width: clamp(54px, 9vw, 78px);
+      height: clamp(92px, 15.3vw, 132px);
+      border-radius: 8px;
+      background: linear-gradient(145deg, #1e0d42 0%, #0d0820 100%);
+      border: 1.5px solid var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(16px, 3vw, 24px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
+      will-change: transform, opacity;
+      transform-origin: center center;
+    }
+    .shuffle-card::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(200,168,107,0.15);
+      border-radius: 4px;
+    }
+    .shuffle-status {
+      font-family: var(--font-body);
+      font-size: clamp(18px, 2.8vw, 24px);
+      color: #ffffff;
+      font-style: italic;
+      letter-spacing: 1.5px;
+      min-height: 32px;
+      text-align: center;
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+    .shuffle-btn {
+      font-family: var(--font-title);
+      font-size: clamp(14px, 2vw, 18px);
+      letter-spacing: 3px;
+      color: #ffffff;
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      border-radius: 40px;
+      padding: 16px 52px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s, box-shadow 0.3s;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .shuffle-btn.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .shuffle-btn:hover {
+      background: var(--gold-glow);
+      border-color: var(--gold);
+      box-shadow: 0 0 28px var(--gold-glow);
+    }
+    .shuffle-progress {
+      font-family: var(--font-title);
+      font-size: clamp(13px, 1.8vw, 16px);
+      letter-spacing: 3px;
+      color: var(--gold);
+      z-index: 2;
+    }
+
+    /* 덱 안내 문구 */
+    .deck-guide {
+      text-align: center;
+      padding: 20px 16px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(200,168,107,0.04);
+    }
+    .deck-guide-text {
+      font-family: var(--font-body);
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .deck-guide-text strong {
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .deck-guide-sub {
+      font-family: var(--font-body);
+      font-size: clamp(13px, 1.8vw, 16px);
+      color: #c8b89a;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    /* ══════════════════════════════════════════
        반응형
     ══════════════════════════════════════════ */
     @media (max-width: 480px) {
@@ -619,6 +751,20 @@
 </head>
 <body>
 
+<!-- 셔플 오버레이 (78장) -->
+<div class="shuffle-overlay" id="shuffleOverlay">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <p class="shuffle-title">✦ &nbsp; T A R O T &nbsp; ✦</p>
+  <div class="shuffle-stage" id="shuffleStage"></div>
+  <p class="shuffle-status" id="shuffleStatus">카드를 섞는 중입니다...</p>
+  <p class="shuffle-progress" id="shuffleProgress"></p>
+  <button class="shuffle-btn" id="shuffleBtn" onclick="startReading()">
+    🔮 &nbsp; 타로카드 선택하기
+  </button>
+</div>
+
+
 <!-- 배경 장식 -->
 <div class="bg-orb bg-orb-1"></div>
 <div class="bg-orb bg-orb-2"></div>
@@ -630,7 +776,7 @@
   <header>
     <p class="title-eyebrow">✦ &nbsp; T A R O T &nbsp; ✦</p>
     <h1 class="title-main">The Three Card Spread</h1>
-    <p class="title-sub">과거 · 현재 · 미래를 펼쳐보세요</p>
+    <p class="title-sub">세 장의 카드가 당신의 궁금증을 해결해드립니다</p>
     <div class="divider"><span class="divider-symbol">✦ ✦ ✦</span></div>
   </header>
 
@@ -650,9 +796,13 @@
 
   <!-- 덱 섹션 -->
   <section class="deck-section" id="deckSection">
+    <div class="deck-guide">
+      <p class="deck-guide-text">✦ &nbsp; 아래 <strong>78장</strong>의 카드 중 마음이 이끌리는 <strong>3장</strong>을 골라보세요 &nbsp; ✦</p>
+      <p class="deck-guide-sub">카드에 집중하며 천천히 스크롤하세요</p>
+    </div>
     <div class="deck-header">
       <span class="deck-header-label">덱에서 카드를 골라보세요</span>
-      <span class="deck-count" id="deckCountLabel">78장</span>
+      <span class="deck-count" id="deckCountLabel">총 78장</span>
     </div>
     <div class="card-grid" id="cardGrid">
       <!-- JS로 생성 -->
@@ -661,7 +811,7 @@
 
   <!-- 리셋 버튼 -->
   <div class="reset-section" id="resetSection" style="display:none">
-    <button class="reset-btn" onclick="resetReading()">🔮 &nbsp; 다시 점치기</button>
+    <button class="reset-btn" onclick="resetReading()">🔮 &nbsp; 타로카드 선택하기</button>
   </div>
 
 </div>
@@ -783,7 +933,7 @@ const CARDS = [
   {id:78, suit:"wands",     name:"Page of Wands"},
 ];
 
-const POSITIONS = ["과거", "현재", "미래"];
+const POSITIONS = ["원인", "현재", "결과"];
 const IMG = (id) => `images/card${id}.png`;
 const BACK_IMG = `images/card-back.png`;
 const MAX = 3;
@@ -1000,12 +1150,231 @@ document.addEventListener("keydown", e => {
 // 리셋
 // ══════════════════════════════════════════
 function resetReading() {
+  // 셔플 오버레이 다시 표시
+  const overlay = document.getElementById('shuffleOverlay');
+  const btn = document.getElementById('shuffleBtn');
+  const statusEl = document.getElementById('shuffleStatus');
+  const progressEl = document.getElementById('shuffleProgress');
+
+  // 상태 초기화
+  btn.classList.remove('visible');
+  statusEl.style.opacity = '1';
+  statusEl.textContent = '카드를 섞는 중입니다...';
+  progressEl.textContent = '';
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // 페이드인
+  overlay.classList.remove('hide');
+
+  // 카드 재생성 + 셔플 애니메이션 재실행
+  setTimeout(() => {
+    buildShuffleCards();
+    runShuffleAnimation();
+  }, 100);
+
+  // 메인 상태 초기화
   init();
+}
+
+
+// ══════════════════════════════════════════
+// 78장 셔플 애니메이션
+// ══════════════════════════════════════════
+const TOTAL_CARDS = 78;
+
+// 카드 DOM 생성
+function buildShuffleCards() {
+  const stage = document.getElementById('shuffleStage');
+  stage.innerHTML = '';
+
+  for (let i = 0; i < TOTAL_CARDS; i++) {
+    const card = document.createElement('div');
+    card.className = 'shuffle-card';
+    card.id = 'scard-' + i;
+    card.textContent = '🔮';
+    // 초기 위치: 덱처럼 살짝 쌓인 형태
+    const offsetX = (i - TOTAL_CARDS / 2) * 0.3;
+    const offsetY = -i * 0.4;
+    card.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    card.style.zIndex = i;
+    stage.appendChild(card);
+  }
+}
+
+// 카드 배열을 두 그룹으로 나눠 리플 셔플처럼 섞는 애니메이션
+function runShuffleAnimation() {
+  const statusEl  = document.getElementById('shuffleStatus');
+  const progressEl = document.getElementById('shuffleProgress');
+  const btn       = document.getElementById('shuffleBtn');
+
+  const messages = [
+    '카드를 섞는 중입니다...',
+    '에너지를 불어넣는 중...',
+    '78장의 운명을 정렬하는 중...',
+    '거의 다 됐어요...',
+    '준비가 완료되었습니다 ✦',
+  ];
+
+  const ROUNDS = 5; // 셔플 횟수
+  let round = 0;
+
+  function getCards() {
+    return Array.from(document.querySelectorAll('.shuffle-card'));
+  }
+
+  // 모든 카드를 덱 형태로 정렬
+  function stackDeck(cards, duration = 400) {
+    cards.forEach((card, i) => {
+      card.style.transition = `transform ${duration}ms cubic-bezier(0.4,0,0.2,1)`;
+      const offsetX = (i - TOTAL_CARDS / 2) * 0.3;
+      const offsetY = -i * 0.4;
+      card.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(0deg)`;
+      card.style.zIndex = i;
+    });
+  }
+
+  // 리플 셔플: 왼쪽/오른쪽 두 더미로 펼쳐 인터리브
+  function riffleShuffle(cards, onDone) {
+    const half = Math.floor(cards.length / 2);
+    const leftPile  = cards.slice(0, half);
+    const rightPile = cards.slice(half);
+    const stageW = document.getElementById('shuffleStage').offsetWidth;
+    const spread = stageW * 0.28;
+
+    // 두 그룹으로 펼치기
+    leftPile.forEach((card, i) => {
+      card.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1)';
+      const angle = -12 + (i / half) * 8;
+      const tx = -spread + (i / half) * (spread * 0.5);
+      const ty = -i * 0.5 - 10;
+      card.style.transform = `translate(${tx}px, ${ty}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+    });
+    rightPile.forEach((card, i) => {
+      card.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1)';
+      const angle = 12 - (i / rightPile.length) * 8;
+      const tx = spread - (i / rightPile.length) * (spread * 0.5);
+      const ty = -i * 0.5 - 10;
+      card.style.transform = `translate(${tx}px, ${ty}px) rotate(${angle}deg)`;
+      card.style.zIndex = half + i;
+    });
+
+    // 인터리브: 한장씩 번갈아 가운데로
+    setTimeout(() => {
+      const interleaved = [];
+      const maxLen = Math.max(leftPile.length, rightPile.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (i < leftPile.length)  interleaved.push(leftPile[i]);
+        if (i < rightPile.length) interleaved.push(rightPile[i]);
+      }
+      interleaved.forEach((card, i) => {
+        setTimeout(() => {
+          card.style.transition = 'transform 0.18s ease-out';
+          const offsetX = (i - TOTAL_CARDS / 2) * 0.3;
+          const offsetY = -i * 0.4;
+          card.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(0deg)`;
+          card.style.zIndex = i;
+          if (i === interleaved.length - 1) {
+            setTimeout(onDone, 220);
+          }
+        }, i * 5); // 한장씩 빠르게
+      });
+    }, 380);
+  }
+
+  // 오버핸드 셔플: 위에서 조금씩 떼어 아래로 쌓기
+  function overhandShuffle(cards, onDone) {
+    const stageW = document.getElementById('shuffleStage').offsetWidth;
+    let remaining = [...cards];
+    let newOrder  = [];
+    const chunkSize = 8;
+
+    function dropChunk() {
+      if (remaining.length === 0) {
+        // 재정렬
+        newOrder.forEach((card, i) => {
+          card.style.transition = 'transform 0.25s ease';
+          const offsetX = (i - TOTAL_CARDS / 2) * 0.3;
+          const offsetY = -i * 0.4;
+          card.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(0deg)`;
+          card.style.zIndex = i;
+        });
+        setTimeout(onDone, 350);
+        return;
+      }
+
+      const chunk = remaining.splice(0, chunkSize + Math.floor(Math.random() * 6));
+      chunk.forEach((card, i) => {
+        card.style.transition = 'transform 0.2s ease';
+        const tx = (Math.random() - 0.5) * stageW * 0.15;
+        const angle = (Math.random() - 0.5) * 10;
+        card.style.transform = `translate(${tx}px, ${-newOrder.length * 0.4 - i * 0.4}px) rotate(${angle}deg)`;
+        card.style.zIndex = newOrder.length + i;
+      });
+      newOrder = newOrder.concat(chunk);
+      setTimeout(dropChunk, 160);
+    }
+    dropChunk();
+  }
+
+  function doRound() {
+    if (round >= ROUNDS) {
+      const cards = getCards();
+      stackDeck(cards, 500);
+      statusEl.style.opacity = '0';
+      setTimeout(() => {
+        statusEl.textContent = messages[4];
+        statusEl.style.opacity = '1';
+        progressEl.textContent = '';
+      }, 300);
+      setTimeout(() => btn.classList.add('visible'), 900);
+      return;
+    }
+
+    // 메시지 업데이트
+    statusEl.style.opacity = '0';
+    setTimeout(() => {
+      statusEl.textContent = messages[Math.min(round, messages.length - 2)];
+      statusEl.style.opacity = '1';
+    }, 200);
+    progressEl.textContent = `${round + 1} / ${ROUNDS}`;
+
+    const cards = getCards();
+
+    // 홀수 라운드: 리플, 짝수: 오버핸드
+    if (round % 2 === 0) {
+      riffleShuffle(cards, () => {
+        round++;
+        setTimeout(doRound, 200);
+      });
+    } else {
+      overhandShuffle(cards, () => {
+        round++;
+        setTimeout(doRound, 200);
+      });
+    }
+  }
+
+  // 시작 딜레이
+  setTimeout(doRound, 500);
+}
+
+function startReading() {
+  const overlay = document.getElementById('shuffleOverlay');
+  overlay.classList.add('hide');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }, 900);
 }
 
 // ══════════════════════════════════════════
 // 시작
 // ══════════════════════════════════════════
+document.body.style.overflow = 'hidden';
+buildShuffleCards();
+runShuffleAnimation();
 init();
 </script>
 </body>
