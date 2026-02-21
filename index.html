@@ -631,12 +631,10 @@ function playSound(type) {
 
 // ══ AI 사용 횟수 체크 (오늘 날짜 기준) ══
 function hasUsedAiToday() {
-  const today = new Date().toISOString().slice(0,10);
-  return localStorage.getItem('tarot_ai_date') === today;
+  return false; // 🔧 테스트 모드 - 제한 없음
 }
 function markAiUsed() {
-  const today = new Date().toISOString().slice(0,10);
-  localStorage.setItem('tarot_ai_date', today);
+  // 🔧 테스트 모드 - 저장 안 함
 }
 
 // ══ 카드 선택 확정 ══
