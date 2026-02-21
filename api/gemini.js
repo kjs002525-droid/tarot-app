@@ -41,7 +41,7 @@ ${cardInfo}
 위 세 장의 카드를 바탕으로 사용자의 질문에 대한 타로 리딩을 해주세요.
 각 카드의 의미를 설명하고, 전체적인 메시지를 전달해주세요.
 신비롭고 감성적인 문체로, 따뜻하고 희망적인 방향으로 답변해주세요.
-답변은 300자 내외로 간결하게 작성해주세요.`;
+답변은 500자 내외로 작성해주세요. 문장이 끊기지 않게 완전한 문장으로 마무리해주세요.`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -52,7 +52,7 @@ ${cardInfo}
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.8,
-            maxOutputTokens: 600,
+            maxOutputTokens: 1500,
           }
         })
       }
