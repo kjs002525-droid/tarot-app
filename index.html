@@ -81,12 +81,13 @@
     /* 카드 그리드 */
     .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(60px,8vw,90px),1fr)); gap:clamp(6px,1.2vw,12px); }
     .grid-card { aspect-ratio:2/3.4; border-radius:8px; overflow:hidden; cursor:pointer; position:relative; transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),box-shadow 0.2s ease,opacity 0.2s ease; box-shadow:0 4px 12px rgba(0,0,0,0.5); background:#1a0a3a; border:1.5px solid transparent; animation:gridCardIn 0.4s ease both; }
-    .grid-card img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+    .grid-card img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; position:relative; z-index:0; }
     .grid-card:hover:not(.selected):not(.disabled) { transform:translateY(-4px) scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.7),0 0 16px var(--gold-glow); border-color:var(--gold-dim); z-index:2; }
     .grid-card.selected { opacity:0.35; border-color:var(--gold); cursor:default; }
     .grid-card.selected .check-overlay { display:flex; }
     .grid-card.disabled { opacity:0.18; cursor:not-allowed; pointer-events:none; }
     .check-overlay { position:absolute; inset:0; background:rgba(200,168,107,0.15); display:none; align-items:center; justify-content:center; color:var(--gold); font-size:20px; font-weight:700; }
+    .card-number { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--font-title); font-size:clamp(13px,1.8vw,18px); color:#ffffff; letter-spacing:1px; pointer-events:none; z-index:10; font-weight:600; text-shadow:0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.8); }
 
     /* 리셋 버튼 */
     .reset-section { text-align:center; margin-top:48px; }
@@ -437,7 +438,8 @@ function renderDeck() {
     el.style.animationDelay=`${Math.min(idx*8,300)}ms`;
     const img=document.createElement("img"); img.src=BACK_IMG; img.alt="card"; img.loading="lazy";
     const check=document.createElement("div"); check.className="check-overlay"; check.textContent="✓";
-    el.append(img,check);
+    const num=document.createElement("div"); num.className="card-number"; num.textContent=idx+1;
+    el.append(img,check,num);
     if(!isSel&&!isDis) el.onclick=()=>triggerReveal(card);
     grid.appendChild(el);
   });
