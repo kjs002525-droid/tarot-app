@@ -31,23 +31,30 @@ export default async function handler(req, res) {
     }).join('\n');
 
     // Gemini에게 보낼 프롬프트
-    const prompt = `당신은 신비롭고 따뜻한 타로 상담사입니다. 반드시 한국어로만 답변하세요.
+    const prompt = `당신은 경험 많고 따뜻한 타로 상담사입니다. 반드시 한국어로만 답변하세요.
 
-질문: ${question}
-카드: ${cardInfo}
+사용자의 질문: ${question}
 
-아래 형식으로 간결하게 답변하세요. 각 항목은 2문장 이내로 작성하세요.
+뽑힌 카드:
+${cardInfo}
 
-🔮 전체 메시지
-(세 카드가 전하는 핵심 메시지를 2문장으로)
+아래 형식으로 상세하게 타로 리딩을 해주세요.
 
-✨ 카드 해석
-(각 카드 한 줄씩 간단히)
+각 카드를 아래처럼 개별적으로 깊이 있게 해석해주세요:
 
-💫 조언
-(따뜻한 마무리 조언 1~2문장)
+1. [원인 카드 이름]: "[카드의 별명이나 핵심 키워드]"
+카드의 의미를 질문과 연결하여 3~4문장으로 구체적이고 생생하게 설명해주세요. 역방향이면 역방향 의미를 반영하세요.
 
-전체 200자 이내로 간결하게 작성하세요.`;
+2. [현재 카드 이름]: "[카드의 별명이나 핵심 키워드]"
+카드의 의미를 질문과 연결하여 3~4문장으로 구체적이고 생생하게 설명해주세요. 역방향이면 역방향 의미를 반영하세요.
+
+3. [결과 카드 이름]: "[카드의 별명이나 핵심 키워드]"
+카드의 의미를 질문과 연결하여 3~4문장으로 구체적이고 생생하게 설명해주세요. 역방향이면 역방향 의미를 반영하세요.
+
+💡 총평 및 조언
+세 카드를 종합하여 사용자에게 실질적이고 따뜻한 조언을 3~5문장으로 전달해주세요. 한 줄 요약도 포함해주세요.
+
+전체적으로 친근하고 생동감 있는 문체로 작성하되, 구체적인 상황과 연결하여 실감나게 해석해주세요.`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -58,7 +65,7 @@ export default async function handler(req, res) {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.8,
-            maxOutputTokens: 1024,
+            maxOutputTokens: 3000,
           }
         })
       }
