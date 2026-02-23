@@ -43,7 +43,7 @@
     header { text-align:center; padding:60px 20px 40px; animation:fadeDown 0.9s ease both; }
     .title-eyebrow { font-family:var(--font-title); font-size:11px; letter-spacing:8px; color:var(--gold); margin-bottom:16px; animation:goldPulse 4s ease-in-out infinite; }
     .title-main { font-family:var(--font-title); font-size:clamp(28px,5vw,52px); font-weight:400; color:var(--cream); letter-spacing:3px; margin-bottom:12px; line-height:1.2; }
-    .title-sub { font-family:var(--font-body); font-size:clamp(14px,2vw,17px); color:#ffffff; font-style:italic; letter-spacing:1px; }
+    .title-sub { font-family:var(--font-body); font-size:clamp(14px,2vw,17px); color:var(--muted); font-style:italic; letter-spacing:1px; }
     .divider { display:flex; align-items:center; gap:16px; margin:32px auto; max-width:400px; }
     .divider::before,.divider::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold-dim),transparent); }
     .divider-symbol { color:var(--gold); font-size:14px; letter-spacing:4px; }
@@ -67,12 +67,12 @@
     .slot-card-front.reversed img { transform:rotate(180deg); }
     .reversed-badge { position:absolute; bottom:8px; left:8px; background:rgba(160,40,40,0.9); color:#fff; font-family:var(--font-title); font-size:8px; letter-spacing:1.5px; padding:3px 7px; border-radius:4px; z-index:2; }
     .slot-card:hover .slot-card-inner { filter:brightness(1.08); }
-    .slot-name { font-family:var(--font-body); font-size:clamp(11px,1.5vw,14px); color:#ffffff; text-align:center; line-height:1.4; font-style:italic; min-height:36px; }
+    .slot-name { font-family:var(--font-body); font-size:clamp(11px,1.5vw,14px); color:var(--muted); text-align:center; line-height:1.4; font-style:italic; min-height:36px; }
 
     /* 덱 섹션 */
     .deck-section { margin-top:8px; }
     .deck-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:0 4px; }
-    .deck-header-label { font-family:var(--font-body); font-size:14px; color:#ffffff; font-style:italic; }
+    .deck-header-label { font-family:var(--font-body); font-size:14px; color:var(--muted); font-style:italic; }
     .deck-count { font-family:var(--font-title); font-size:11px; letter-spacing:2px; color:var(--gold-dim); }
     .deck-guide { text-align:center; padding:14px 12px; margin-bottom:16px; border:1px solid var(--border); border-radius:14px; background:rgba(200,168,107,0.04); }
     .deck-guide-text { font-family:var(--font-body); font-size:clamp(14px,2.2vw,19px); color:#fff; letter-spacing:0.3px; line-height:1.5; word-break:keep-all; }
@@ -96,7 +96,7 @@
 
     /* 상태 메시지 */
     .status-bar { text-align:center; margin-bottom:28px; }
-    .status-text { font-family:var(--font-body); font-size:clamp(13px,2vw,16px); color:#ffffff; font-style:italic; letter-spacing:0.5px; }
+    .status-text { font-family:var(--font-body); font-size:clamp(13px,2vw,16px); color:var(--muted); font-style:italic; letter-spacing:0.5px; }
     .status-count { color:var(--gold); font-style:normal; }
 
     /* 모달 */
@@ -113,7 +113,7 @@
     .modal-suit { font-family:var(--font-title); font-size:10px; letter-spacing:4px; color:var(--gold); margin-bottom:10px; }
     .modal-name { font-family:var(--font-title); font-size:clamp(20px,4vw,28px); font-weight:400; color:var(--cream); letter-spacing:2px; margin-bottom:14px; }
     .modal-reversed-tag { display:inline-block; border:1px solid rgba(192,80,80,0.5); border-radius:20px; padding:5px 16px; color:#e07070; font-family:var(--font-title); font-size:10px; letter-spacing:2.5px; background:rgba(192,80,80,0.08); }
-    .modal-close-row { border-top:1px solid var(--border); padding:16px; text-align:center; cursor:pointer; color:#ffffff; font-family:var(--font-title); font-size:12px; letter-spacing:2px; transition:color 0.2s; flex-shrink:0; }
+    .modal-close-row { border-top:1px solid var(--border); padding:16px; text-align:center; cursor:pointer; color:var(--muted); font-family:var(--font-title); font-size:12px; letter-spacing:2px; transition:color 0.2s; flex-shrink:0; }
     .modal-close-row:hover { color:var(--cream); }
 
     /* ══ 셔플 오버레이 ══ */
@@ -210,8 +210,8 @@
       /* 제목은 스크롤해도 상단에 고정되게 설정 */
       position: sticky; top: 0; background: #07070f; padding: 5px 0; z-index: 10;
     }
-    .ai-result-text { font-family:var(--font-body); font-size:clamp(16px,2.2vw,20px); color:#ffffff; line-height:1.9; font-style:italic; white-space:pre-wrap; }
-    .ai-loading { display:flex; align-items:center; justify-content:center; gap:12px; color:#ffffff; font-family:var(--font-body); font-size:18px; font-style:italic; padding:20px; }
+    .ai-result-text { font-family:var(--font-body); font-size:clamp(16px,2.2vw,20px); color:#e8ddd0; line-height:1.9; font-style:italic; white-space:pre-wrap; }
+    .ai-loading { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); font-family:var(--font-body); font-size:18px; font-style:italic; padding:20px; }
     .ai-loading-dots { display:flex; gap:6px; }
     .ai-loading-dots span { width:8px; height:8px; border-radius:50%; background:var(--gold); animation:dotPulse 1.4s ease-in-out infinite; }
     .ai-loading-dots span:nth-child(2) { animation-delay:0.2s; }
@@ -462,7 +462,7 @@ async function callGeminiAPI(question, cards) {
   
   aiContent.innerHTML = `
     <div class="ai-loading">
-      <span>당신의 궁금증을 푸는 중입니다</span>
+      <span>AI가 카드를 해석하는 중입니다</span>
       <div class="ai-loading-dots">
         <span></span><span></span><span></span>
       </div>
