@@ -133,7 +133,7 @@
     .shuffle-cursor.active { width:70px; height:70px; background:rgba(200,168,107,0.15); }
 
     /* 카드 */
-    .shuffle-card { position:absolute; width:clamp(52px,8vw,80px); height:clamp(88px,13.6vw,136px); border-radius:8px; background:linear-gradient(145deg,#1e0b40,#0c0720); border:1.5px solid var(--gold-dim); display:flex; align-items:center; justify-content:center; font-size:clamp(16px,2.8vw,26px); box-shadow:0 4px 16px rgba(0,0,0,0.8); will-change:transform; cursor:none; transition:box-shadow 0.2s; }
+    .shuffle-card { position:absolute; width:clamp(52px,8vw,80px); height:clamp(88px,13.6vw,136px); border-radius:8px; background:linear-gradient(145deg,#1e0b40,#0c0720); border:1.5px solid var(--gold-dim); overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:clamp(16px,2.8vw,26px); box-shadow:0 4px 16px rgba(0,0,0,0.8); will-change:transform; cursor:none; transition:box-shadow 0.2s; }
     .shuffle-card::after { content:''; position:absolute; inset:5px; border:1px solid rgba(200,168,107,0.15); border-radius:4px; pointer-events:none; }
     .shuffle-card.lit { box-shadow:0 4px 16px rgba(0,0,0,0.8), 0 0 18px rgba(200,168,107,0.35); border-color:rgba(200,168,107,0.55); }
 
@@ -177,8 +177,8 @@
     .question-title { font-family:var(--font-title); font-size:clamp(16px,2.8vw,22px); letter-spacing:7px; color:var(--gold); animation:goldPulse 2s ease-in-out infinite; text-align:center; }
     .question-sub { font-family:var(--font-body); font-size:clamp(16px,2.5vw,20px); color:#c8b89a; font-style:italic; text-align:center; letter-spacing:0.5px; }
     .question-input-wrap { width:100%; max-width:520px; position:relative; }
-    .question-input { width:100%; background:rgba(255,255,255,0.04); border:1.5px solid var(--gold-dim); border-radius:14px; padding:18px 20px; font-family:var(--font-body); font-size:clamp(16px,2.2vw,20px); color:#fff; outline:none; resize:none; min-height:120px; line-height:1.6; transition:border-color 0.3s ease, box-shadow 0.3s ease; letter-spacing:0.3px; }
-    .question-input::placeholder { color:rgba(255,255,255,0.6); font-style:italic; }
+    .question-input { width:100%; background:rgba(255,255,255,0.04); border:1.5px solid var(--gold-dim); border-radius:14px; padding:18px 20px; font-family:var(--font-body); font-size:clamp(16px,2.2vw,20px); color:#fff; outline:none; resize:none; min-height:180px; line-height:1.6; transition:border-color 0.3s ease, box-shadow 0.3s ease; letter-spacing:0.3px; }
+    .question-input::placeholder { color:rgba(255,255,255,0.75); font-style:italic; }
     .question-input:focus { border-color:var(--gold); box-shadow:0 0 20px var(--gold-glow); }
     .question-btn { font-family:var(--font-title); font-size:clamp(14px,2vw,17px); letter-spacing:3px; color:#fff; background:transparent; border:1.5px solid var(--gold); border-radius:40px; padding:16px 52px; cursor:pointer; transition:all 0.3s ease; }
     .question-btn:hover { background:var(--gold-glow); box-shadow:0 0 28px var(--gold-glow); }
@@ -241,11 +241,7 @@
   <p class="question-title">✦ &nbsp; T A R O T &nbsp; ✦</p>
   <p class="question-sub">카드에게 물어볼 질문을 적어주세요</p>
   <div class="question-input-wrap">
-    <textarea class="question-input" id="questionInput" placeholder="타로는 질문이 답의 80%를 결정합니다.
-질문은 상황을 구체적으로 말해야 합니다.
-
-예) "새로운 사람을 만나고 싶은데, 제 어떤 매력을 어필하면 좋을까요?"
-예) "지금 사귀는 분과 자주 싸우는데, 갈등의 근본적인 원인이 무엇일까요?"" maxlength="200"></textarea>
+    <textarea class="question-input" id="questionInput" placeholder="타로는 질문이 답의 80%를 결정합니다.&#10;질문은 상황을 구체적으로 말해야 합니다.&#10;&#10;예) 새로운 사람을 만나고 싶은데, 제 어떤 매력을 어필하면 좋을까요?&#10;예) 지금 사귀는 분과 자주 싸우는데, 갈등의 근본적인 원인이 무엇일까요?" maxlength="200"></textarea>
   </div>
   <button class="question-btn" id="questionBtn" onclick="submitQuestion()">✦ &nbsp; 카드 뽑으러 가기</button>
 </div>
@@ -338,7 +334,7 @@
   <!-- AI 해석 결과 -->
   <div id="aiResultSection" style="display:none">
     <div class="ai-result-section">
-      <p class="ai-result-label">✦ &nbsp; 카드가 선택한 당신의 이야기 &nbsp; ✦</p>
+      <p class="ai-result-label">✦ &nbsp; AI 타로 해석 &nbsp; ✦</p>
       <div id="aiResultContent"></div>
     </div>
   </div>
@@ -466,7 +462,7 @@ async function callGeminiAPI(question, cards) {
   
   aiContent.innerHTML = `
     <div class="ai-loading">
-      <span>AI가 카드를 해석하는 중입니다</span>
+      <span>당신의 운명을 엿보는 중입니다</span>
       <div class="ai-loading-dots">
         <span></span><span></span><span></span>
       </div>
@@ -555,7 +551,8 @@ function buildShuffleCards() {
   for (let i = 0; i < TOTAL; i++) {
     const el = document.createElement('div');
     el.className = 'shuffle-card';
-    el.textContent = '🔮';
+    el.style.padding = '0';
+    el.innerHTML = '<img src="images/card-back.png" alt="card" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;">';
 
     const x = safe.minX + Math.random() * (safe.maxX - safe.minX);
     const y = safe.minY + Math.random() * (safe.maxY - safe.minY);
