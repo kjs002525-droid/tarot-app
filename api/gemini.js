@@ -84,7 +84,7 @@ ${cardInfo}
 모든 문장은 반드시 완전하게 끝내라. 절대 중간에 끊지 마라. 각 섹션은 위의 형식을 그대로 따르라.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
