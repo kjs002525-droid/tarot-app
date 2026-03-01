@@ -216,6 +216,8 @@
     .ai-loading-dots span { width:8px; height:8px; border-radius:50%; background:var(--gold); animation:dotPulse 1.4s ease-in-out infinite; }
     .ai-loading-dots span:nth-child(2) { animation-delay:0.2s; }
     .ai-loading-dots span:nth-child(3) { animation-delay:0.4s; }
+    .retry-btn { font-family:var(--font-title); font-size:clamp(13px,1.8vw,15px); letter-spacing:2px; color:#fff; background:transparent; border:1.5px solid rgba(200,168,107,0.6); border-radius:30px; padding:12px 32px; cursor:pointer; margin-top:16px; transition:all 0.3s ease; display:block; margin-left:auto; margin-right:auto; }
+    .retry-btn:hover { background:var(--gold-glow); border-color:var(--gold); box-shadow:0 0 16px var(--gold-glow); }
     @keyframes dotPulse { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacit
 
 
@@ -241,7 +243,7 @@
   <p class="question-title">✦ &nbsp; T A R O T &nbsp; ✦</p>
   <p class="question-sub">카드에게 물어볼 질문을 적어주세요</p>
   <div class="question-input-wrap">
-    <textarea class="question-input" id="questionInput" placeholder="타로는 질문이 답의 80%를 결정합니다.&#10;상황을 구체적으로 질문해야합니다.&#10;&#10;예) 새로운 사람을 만나고 싶은데, 제 어떤 매력을 어필하면 좋을까요?&#10;예) 지금 사귀는 분과 자주 싸우는데, 갈등의 근본적인 원인이 무엇일까요?" maxlength="200"></textarea>
+    <textarea class="question-input" id="questionInput" placeholder="타로는 질문이 답의 80%를 결정합니다.&#10;질문은 상황을 구체적으로 말해야 합니다.&#10;&#10;예) 새로운 사람을 만나고 싶은데, 제 어떤 매력을 어필하면 좋을까요?&#10;예) 지금 사귀는 분과 자주 싸우는데, 갈등의 근본적인 원인이 무엇일까요?" maxlength="200"></textarea>
   </div>
   <button class="question-btn" id="questionBtn" onclick="submitQuestion()">✦ &nbsp; 카드 뽑으러 가기</button>
 </div>
@@ -452,7 +454,20 @@ function submitQuestion() {
 
 // ══ Gemini API 호출 ══
 // ══ Gemini API 호출 (수정 버전) ══
+// ══ 재시도를 위한 저장 변수 ══
+let _lastQuestion = '';
+let _lastCards = [];
+
+function retryGeminiAPI() {
+  if (_lastQuestion && _lastCards.length > 0) {
+    callGeminiAPI(_lastQuestion, _lastCards);
+  }
+}
+
 async function callGeminiAPI(question, cards) {
+  // 재시도용 저장
+  _lastQuestion = question;
+  _lastCards = cards;
   const aiSection = document.getElementById('aiResultSection');
   const aiContent = document.getElementById('aiResultContent');
   const resetSection = document.getElementById('resetSection'); // 버튼이 있는 영역
@@ -489,12 +504,15 @@ async function callGeminiAPI(question, cards) {
     aiSection.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch (error) {
+    // 재시도를 위해 question, cards 저장
     aiContent.innerHTML = `
-      <p class="ai-result-text" style="color:#e07070;">
-        AI 해석을 불러오는 데 실패했습니다.<br>
-        잠시 후 다시 시도해주세요.
+      <p class="ai-result-text" style="color:#e07070; text-align:center;">
+        해석을 불러오는 데 실패했습니다.<br>
+        잠시 후 아래 버튼을 눌러주세요.
       </p>
+      <button class="retry-btn" onclick="retryGeminiAPI()">🔮 &nbsp; 해석 다시 보기</button>
     `;
+    resetSection.style.display = 'block';
   }
 }
 
