@@ -24,9 +24,6 @@ export default async function handler(req) {
   try {
     const { question, cards } = await req.json();
 
-    // index.html에서 보내는 형식:
-    // cards = [ { name: "The Fool", reversed: false }, ... ]
-    // 이를 프롬프트용 문자열로 변환
     const cardInfo = cards.map((c, i) => {
       const pos = ['원인', '현재', '결과'][i] || i + 1;
       return `${pos} 카드: ${c.name}${c.reversed ? ' (역방향)' : ''}`;
@@ -40,7 +37,7 @@ export default async function handler(req) {
       });
     }
 
-    const prompt = `당신은 '운명 공학 플랫폼 아르케'의 데이터 분석 엔진입니다. 사용자의 타로 선택을 '무의식의 데이터'로 간주하고, 이를 인과율의 법칙에 따라 날카롭게 분석하세요. 말투는 냉철하지만 지적 권위가 느껴지는 전문가 톤을 유지하십시오. 반드시 한국어로만 답변하라.
+    const prompt = `너는 단순한 타로 해석가가 아니라, 인간의 행동 패턴을 분석하여 미래를 시뮬레이션하는 '인과율 분석가'다. 반드시 한국어로만 답변하라.
 
 [사용자 질문]: ${question}
 [사용자 성향 컨텍스트]: 이성적이고 의심이 많음. 위로보다는 날카로운 분석과 현실적인 징조 예고를 원함.
@@ -52,13 +49,13 @@ ${cardInfo}
 
 ---
 
-🔮 운명 데이터 역추적
+🔮 당신이 반복해온 운명의 패턴
 [원인 카드: ${cards[0]?.name}${cards[0]?.reversed ? ' (역방향)' : ''}]
 이 카드가 나타내는 과거의 사건이 아니라, 그 사건을 만든 사용자의 '반복적인 행동 습관'이나 '기질'을 2~3문장으로 날카롭게 분석하라.
 
 ---
 
-🌑 실시간 궤도분석
+🌑 지금 당신의 눈을 가리고 있는 것
 [현재 카드: ${cards[1]?.name}${cards[1]?.reversed ? ' (역방향)' : ''}]
 이 카드가 보여주는 현재 상황에서 사용자가 범하고 있는 '인지적 오류'나 '심리적 맹점'을 2~3문장으로 구체적으로 지적하라.
 
@@ -83,7 +80,8 @@ ${cardInfo}
 
 모든 문장은 반드시 완전하게 끝내라. 절대 중간에 끊지 마라. 각 섹션은 위의 형식을 그대로 따르라.`;
 
-    const response = await fetch(
+    // Gemini API 호출
+    const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -98,18 +96,86 @@ ${cardInfo}
       }
     );
 
-    const data = await response.json();
+    const geminiData = await geminiResponse.json();
 
-    if (!response.ok) {
-      return new Response(JSON.stringify({ error: data.error?.message || 'Gemini API error' }), {
-        status: response.status,
+    if (!geminiResponse.ok) {
+      return new Response(JSON.stringify({ error: geminiData.error?.message || 'Gemini API error' }), {
+        status: geminiResponse.status,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const resultText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    return new Response(JSON.stringify({ result: text }), {
+    // Google Sheets에 기록
+    try {
+      const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+      const sheetId = process.env.GOOGLE_SHEET_ID;
+
+      // JWT 토큰 생성
+      const now = Math.floor(Date.now() / 1000);
+      const header = { alg: 'RS256', typ: 'JWT' };
+      const payload = {
+        iss: serviceAccount.client_email,
+        scope: 'https://www.googleapis.com/auth/spreadsheets',
+        aud: 'https://oauth2.googleapis.com/token',
+        exp: now + 3600,
+        iat: now,
+      };
+
+      const encode = (obj) => btoa(JSON.stringify(obj)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+      const headerB64 = encode(header);
+      const payloadB64 = encode(payload);
+      const signingInput = `${headerB64}.${payloadB64}`;
+
+      // RSA 서명
+      const privateKeyPem = serviceAccount.private_key;
+      const pemContents = privateKeyPem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\n/g, '');
+      const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+      const cryptoKey = await crypto.subtle.importKey(
+        'pkcs8', binaryDer.buffer,
+        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        false, ['sign']
+      );
+      const signature = await crypto.subtle.sign(
+        'RSASSA-PKCS1-v1_5', cryptoKey,
+        new TextEncoder().encode(signingInput)
+      );
+      const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+      const jwt = `${signingInput}.${signatureB64}`;
+
+      // 액세스 토큰 발급
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+      });
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
+
+      // 날짜 및 카드 정보
+      const now_date = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+      const card1 = `${cards[0]?.name}${cards[0]?.reversed ? ' (역방향)' : ''}`;
+      const card2 = `${cards[1]?.name}${cards[1]?.reversed ? ' (역방향)' : ''}`;
+      const card3 = `${cards[2]?.name}${cards[2]?.reversed ? ' (역방향)' : ''}`;
+
+      // 스프레드시트에 행 추가
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A:F:append?valueInputOption=RAW`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          values: [[now_date, question, card1, card2, card3, resultText]],
+        }),
+      });
+    } catch (sheetError) {
+      // 시트 기록 실패해도 해석 결과는 정상 반환
+      console.error('Sheet logging failed:', sheetError);
+    }
+
+    return new Response(JSON.stringify({ result: resultText }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });
