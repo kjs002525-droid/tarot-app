@@ -160,7 +160,7 @@ ${cardInfo}
       const card3 = `${cards[2]?.name}${cards[2]?.reversed ? ' (역방향)' : ''}`;
 
       // 스프레드시트에 행 추가
-      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A:F:append?valueInputOption=RAW`, {
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/시트1!A:F:append?valueInputOption=RAW`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
